@@ -1,18 +1,42 @@
 import styled from "styled-components"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import MyWalletLogo from "../components/MyWalletLogo"
-
+import { useState } from "react";
+import axios from "axios";
+//lab@lab.com   //1234
 export default function SignInPage() {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState([])
+  const [senha, setSenha] = useState([])
+  function login(e) {
+    e.preventDefault();
+   
+      axios.post(`${process.env.REACT_APP_API_URL}/login`,
+        {
+          email,
+          senha
+        })
+        .then(res => {
+          console.log(res.data)
+          navigate("/home")
+        })
+        .catch(err => {
+          alert(err.response.data)
+        })
+      //resetar campos
+    
+
+  }
   return (
     <SingInContainer>
-      <form>
+      <form onSubmit={login}>
         <MyWalletLogo />
-        <input placeholder="E-mail" type="email" />
-        <input placeholder="Senha" type="password" autocomplete="new-password" />
+        <input placeholder="E-mail" type="email" onChange={(e) => setEmail(e.target.value)}/>
+        <input placeholder="Senha" type="password" autocomplete="new-password" onChange={(e) => setSenha(e.target.value)}/>
         <button>Entrar</button>
       </form>
 
-      <Link>
+      <Link to="/cadastro">
         Primeira vez? Cadastre-se!
       </Link>
     </SingInContainer>
