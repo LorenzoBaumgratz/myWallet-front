@@ -8,6 +8,7 @@ export default function SignInPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState([])
   const [senha, setSenha] = useState([])
+  const { setUsuario} = useLogin()
   function login(e) {
     e.preventDefault();
    
@@ -17,7 +18,11 @@ export default function SignInPage() {
           senha
         })
         .then(res => {
+          const {nome,token}=res.data
           console.log(res.data)
+          setUsuario({nome,token})
+          localStorage.setItem("usuario", JSON.stringify({nome,token}))
+
           navigate("/home")
         })
         .catch(err => {
