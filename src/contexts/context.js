@@ -15,6 +15,7 @@ export const LoginProvider = (props) => {
             navigate("/home")
         }
     },[])
+    
     return (
         <LoginContext.Provider value={{ usuario, setUsuario }}>
             {props.children}

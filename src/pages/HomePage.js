@@ -1,37 +1,65 @@
 import styled from "styled-components"
 import { BiExit } from "react-icons/bi"
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai"
+import { useLogin } from "../contexts/context"
+import { useEffect, useState } from "react"
+import axios from "axios"
+import { useNavigate } from "react-router-dom"
 
 export default function HomePage() {
+  const navigate = useNavigate();
+  const { usuario } = useLogin()
+  const [transacoes, setTransacoes] = useState()
+  const [saldo, setSaldo] = useState(0)
+
+  const config = {
+    headers: {
+      "Authorization": `Bearer ${usuario.token}`
+    }
+  }
+  useEffect(() => {
+    axios.get(`${process.env.REACT_APP_API_URL}/transacoes`, config)
+      .then(res => {
+        setTransacoes(res.data.reverse())
+        res.data.map(t => {(t.tipo === "entrada")?setSaldo(saldo+t.valor):setSaldo(saldo-t.valor)})
+
+      })
+      .catch(err => {
+        alert(err.response.data)
+      })
+  }, [])
+  if (!transacoes) return
+
+  function logout(){
+    localStorage.removeItem("usuario")
+    navigate("/")
+  }
+
   return (
     <HomeContainer>
       <Header>
-        <h1>Olá, Fulano</h1>
-        <BiExit />
+        <h1>Olá, {usuario.nome}</h1>
+        <BiExit onClick={()=>logout()}/>
       </Header>
 
       <TransactionsContainer>
         <ul>
-          <ListItemContainer>
-            <div>
-              <span>30/11</span>
-              <strong>Almoço mãe</strong>
-            </div>
-            <Value color={"negativo"}>120,00</Value>
-          </ListItemContainer>
-
-          <ListItemContainer>
-            <div>
-              <span>15/11</span>
-              <strong>Salário</strong>
-            </div>
-            <Value color={"positivo"}>3000,00</Value>
-          </ListItemContainer>
+          {transacoes.map((i) =>
+            <ListItemContainer>
+              <div>
+                <span>{i.data}</span>
+                <strong>{i.descricao}</strong>
+              </div>
+              <Value color={i.tipo === "entrada" ? "positivo" : "negativo"}>{(i.valor / 100).toFixed(2)}</Value>
+            </ListItemContainer>
+          )}
         </ul>
 
         <article>
           <strong>Saldo</strong>
-          <Value color={"positivo"}>2880,00</Value>
+          <Value color={saldo > 0 ? "positivo" : "negativo"}>
+          {(saldo/100).toFixed(2)}
+          </Value>
         </article>
       </TransactionsContainer>
 
