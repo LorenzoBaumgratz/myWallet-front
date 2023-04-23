@@ -20,7 +20,6 @@ export default function SignInPage() {
         })
         .then(res => {
           const {nome,token}=res.data
-          console.log(res.data)
           setUsuario({nome,token})
           localStorage.setItem("usuario", JSON.stringify({nome,token}))
 

@@ -11,6 +11,7 @@ export default function HomePage() {
   const { usuario } = useLogin()
   const [transacoes, setTransacoes] = useState()
   const [saldo, setSaldo] = useState(0)
+  
 
   const config = {
     headers: {
@@ -18,19 +19,29 @@ export default function HomePage() {
     }
   }
   useEffect(() => {
+    let total = 0;
     axios.get(`${process.env.REACT_APP_API_URL}/transacoes`, config)
       .then(res => {
         setTransacoes(res.data.reverse())
-        res.data.map(t => {(t.tipo === "entrada")?setSaldo(saldo+t.valor):setSaldo(saldo-t.valor)})
-
+        const entrada = res.data.filter(t => t.tipo === "entrada")
+        const saida = res.data.filter(t => t.tipo === "saida")
+        entrada.map(e => {
+          total = (e.valor / 100) + total
+        })
+        saida.map(s => {
+          total = total - (s.valor / 100)
+        })
+        setSaldo(total)
       })
+
       .catch(err => {
         alert(err.response.data)
       })
+      
   }, [])
   if (!transacoes) return
 
-  function logout(){
+  function logout() {
     localStorage.removeItem("usuario")
     navigate("/")
   }
@@ -39,7 +50,7 @@ export default function HomePage() {
     <HomeContainer>
       <Header>
         <h1>Olá, {usuario.nome}</h1>
-        <BiExit onClick={()=>logout()}/>
+        <BiExit onClick={() => logout()} />
       </Header>
 
       <TransactionsContainer>
@@ -57,19 +68,19 @@ export default function HomePage() {
 
         <article>
           <strong>Saldo</strong>
-          <Value color={saldo > 0 ? "positivo" : "negativo"}>
-          {(saldo/100).toFixed(2)}
+          <Value color={saldo >= 0 ? "positivo" : "negativo"}>
+            {saldo.toFixed(2)}
           </Value>
         </article>
       </TransactionsContainer>
 
 
       <ButtonsContainer>
-        <button>
+        <button onClick={() => navigate("/nova-transacao/entrada")}>
           <AiOutlinePlusCircle />
           <p>Nova <br /> entrada</p>
         </button>
-        <button>
+        <button onClick={() => navigate("/nova-transacao/saida")}>
           <AiOutlineMinusCircle />
           <p>Nova <br />saída</p>
         </button>
