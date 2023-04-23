@@ -11,7 +11,7 @@ export default function HomePage() {
   const { usuario } = useLogin()
   const [transacoes, setTransacoes] = useState()
   const [saldo, setSaldo] = useState(0)
-  
+
 
   const config = {
     headers: {
@@ -37,7 +37,7 @@ export default function HomePage() {
       .catch(err => {
         alert(err.response.data)
       })
-      
+
   }, [])
   if (!transacoes) return
 
@@ -54,17 +54,19 @@ export default function HomePage() {
       </Header>
 
       <TransactionsContainer>
-        <ul>
-          {transacoes.map((i) =>
-            <ListItemContainer>
-              <div>
-                <span>{i.data}</span>
-                <strong>{i.descricao}</strong>
-              </div>
-              <Value color={i.tipo === "entrada" ? "positivo" : "negativo"}>{(i.valor / 100).toFixed(2)}</Value>
-            </ListItemContainer>
-          )}
-        </ul>
+        {transacoes.length === 0 ? <Mensagem>Não há registros de entrada ou saida</Mensagem> :
+          <ul>
+            {transacoes.map((i) =>
+              <ListItemContainer>
+                <div>
+                  <span>{i.data}</span>
+                  <strong>{i.descricao}</strong>
+                </div>
+                <Value color={i.tipo === "entrada" ? "positivo" : "negativo"}>{(i.valor / 100).toFixed(2)}</Value>
+              </ListItemContainer>
+            )}
+          </ul>}
+
 
         <article>
           <strong>Saldo</strong>
@@ -90,6 +92,16 @@ export default function HomePage() {
   )
 }
 
+const Mensagem = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items:center;
+  text-align: center;
+  font-size: 20px;
+  width: 180px;
+  margin: 50% 20%;
+`
+
 const HomeContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -106,6 +118,7 @@ const Header = styled.header`
 `
 const TransactionsContainer = styled.article`
   flex-grow: 1;
+  height: 446px;
   background-color: #fff;
   color: #000;
   border-radius: 5px;
@@ -113,9 +126,13 @@ const TransactionsContainer = styled.article`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  ul{
+    overflow-y: scroll;
+  }
   article {
     display: flex;
-    justify-content: space-between;   
+    justify-content: space-between;
+    margin-right  :10px ;
     strong {
       font-weight: 700;
       text-transform: uppercase;
