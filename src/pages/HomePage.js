@@ -122,7 +122,7 @@ const TransactionsContainer = styled.article`
   background-color: #fff;
   color: #000;
   border-radius: 5px;
-  padding: 16px;
+  padding: 13px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -147,7 +147,7 @@ const ButtonsContainer = styled.section`
   
   button {
     width: 50%;
-    height: 115px;
+    height: 100px;
     font-size: 22px;
     text-align: left;
     display: flex;
