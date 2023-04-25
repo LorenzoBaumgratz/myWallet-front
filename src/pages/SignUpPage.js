@@ -27,6 +27,11 @@ export default function SignUpPage() {
           alert(err.response.data)
         })
       //resetar campos
+    } else {
+      if (senha.length === 0 && confSenha.length === 0) {
+        alert("Todos os campos são obrigatórios")
+      } else alert("Senha e confirme a senha precisam ser iguais")
+
     }
 
   }
