@@ -17,7 +17,10 @@ $ npm install
 ```
 
 
-### `npm start`
+### How to run
+```bash
+$ npm start
+```
 
 ### Deployment
 https://projeto14-my-wallet.vercel.app 
